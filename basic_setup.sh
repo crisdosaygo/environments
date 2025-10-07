@@ -26,6 +26,10 @@ mkdir -p ~/.local/bin/
 $sudo cp commands/* ~/.local/bin/
 $sudo cp commands/* /usr/local/bin
 cp bashrc $HOME/.bashrc.new
+if [[ ! -f ~/.bashrc.old ]]; then
+  mv ~/.bashrc ~/.bashrc.old
+fi
+cat bashrc > ~/.bashrc
 cp vimrc $HOME/.vimrc
 $sudo cp vimrc /root/.vimrc
 $sudo cp bashrc /root/.bashrc.new
