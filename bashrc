@@ -244,7 +244,7 @@ export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
 export EDITOR=vim
-alias pdftox='convert -density 300 "$1" -quality 95 "${1%.pdf}_page_%02d.png"'
+alias pdftox='convert -density 300 "$1" -background white -alpha remove -alpha off -quality 95 "${1%.pdf}_page_%02d.png"'
 
 cd $HOME
 
