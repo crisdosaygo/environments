@@ -1,11 +1,14 @@
 [user]
-	email = writetocris@outlook.com
+	email = cris@dosaygo.com
 	name = Cris
 [core]
 	editor = vim
 [push]
 	default = simple
+  autoSetupRemote = true
+[pull]
+  rebase = false
 [github]
-	user = dosyago-coder-0
+	user = crisdosaygo
 [ghi]
 	token = ::secrettoken
