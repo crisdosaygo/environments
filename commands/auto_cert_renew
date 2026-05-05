@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [[ -z "$1" ]]; then
-  echo "no domain in first position. renew_tls failing"
-  exit 1
-fi
-
-if [[ -z "$2" ]]; then
-  echo "no user in second position. renew_tls failing"
-  exit 1
-fi
-
-sudo cp $HOME/.renew_tls.sh /root/renew_tls.sh
-# add our job to crontab if it's not there already
-(sudo crontab -l | grep "renew_tls.sh $1") || ( sudo crontab -l; echo "0 12 * * * /root/renew_tls.sh $1 $2"; ) | sudo crontab
-
+# Certbot renewals are handled by systemd and /etc/letsencrypt renewal hooks.
+# Do not install the legacy /root/renew_tls.sh cron job; it copied a selected
+# lineage into ~/sslcerts and could overwrite NGINX with the wrong certificate.
+sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+sudo tee /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh >/dev/null <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+nginx -t
+systemctl reload nginx
+EOF
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+sudo systemctl enable --now certbot.timer

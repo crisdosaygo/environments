@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
-#/usr/bun/env bash haha
+set -euo pipefail
 
-which certbot || sudo apt install certbot
-
-if [[ -z "$1" ]]; then
-  echo "Supply a domain name as first argument"
-  exit 1
-fi
-
-sudo certbot certonly --standalone -d $1 --agree-tos -m cris7fe@outlook.com --no-eff-email
-mkdir -p $HOME/sslcerts
-sudo -u root cp_certs $1 $HOME/sslcerts/
-sudo chown $USER:$USER $HOME/sslcerts/*
-
-auto_cert_renew $1 $USER
-
+echo "Disabled: legacy tls command copied certs into ~/sslcerts and installed a root renew_tls cron. Use certbot with /etc/letsencrypt/live/<cert-name> directly and certbot.timer for renewal." >&2
+exit 1
