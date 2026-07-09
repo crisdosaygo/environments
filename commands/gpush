@@ -1,4 +1,19 @@
-npm version $1 ;
-git add . && git commit -S -m "$2";
-git tag "v$(cat package.json | jq .version | tr -d '"')";
-git push --tags && git push && npm publish --access=public
+#!/usr/bin/env bash
+# gpush <semver-level> ["commit message"] — bump, tag, push, publish.
+# Robust rework of the original /usr/local/bin/gpush (root-owned, left in
+# place; this copy shadows it via PATH). Differences: fails fast instead of
+# plowing through with `;`, commits outstanding work BEFORE `npm version`
+# (which refuses a dirty tree), lets npm version create the release commit
+# and tag instead of duplicating them, and pushes commits+tags atomically.
+set -euo pipefail
+level="${1:?usage: gpush <major|minor|patch|premajor|...> [\"commit message\"]}"
+msg="${2:-release}"
+
+if [ -n "$(git status --porcelain)" ]; then
+  git add -A
+  git commit -S -m "$msg"
+fi
+
+npm version "$level"
+git push --follow-tags
+npm publish --access=public
